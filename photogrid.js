@@ -63,7 +63,6 @@ function resize_canvas() {
     canvas.height = canvas.parentNode.offsetHeight;
 
     imagePadding = parseInt(document.getElementById('border').value);
-    console.log("border: " + imagePadding);
 
     if (document.getElementById('maintain-aspect-ratio').checked) {
 	var imageAspectRatio = imageGrid[0][0].width / imageGrid[0][0].height;
