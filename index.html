@@ -10,8 +10,10 @@
     <canvas id="canvas">Canvas not supported</canvas>
   </div>
   <div align="center">
-    <button type="button" id="reroll-button">Reroll</button>
-    <button type="button" id="download-button">Download</button>
+    <input type="checkbox" id="maintain-aspect-ratio" onclick="layout_images()" checked>Maintain Aspect Ratio</input>
+    <input type="number" id="border" value="4" oninput="layout_images()">Border</input>
+    <button type="button" id="reroll-button">Randomize</button>
+    <a href="#" id="download-button">Download</button>
   </div>
 </body>
 </html>

@@ -21,8 +21,13 @@ var imageSources = ["images/b00000338_21i40a_20130625_093646e.jpg",
 		    "images/b00001744_21i40a_20130625_212824e.jpg"];
 var imageObjects = [];
 var imageGrid = [new Array(3), new Array(3), new Array(3)];
+var imagesHorizontal = 3;
+var imagesVertical = 3;
 
 var canvas;
+var imagePadding;
+var imageWidth;
+var imageHeight;
 
 function loadImages(callback) {
     var loadedImages = 0;
@@ -44,8 +49,8 @@ function loadImages(callback) {
 
 function randomize_images(callback) {
     loadImages(function() {
-	for (var x = 0; x < 3; x++) {
-	    for (var y = 0; y < 3; y++ ) {
+	for (var x = 0; x < imagesHorizontal; x++) {
+	    for (var y = 0; y < imagesVertical; y++ ) {
 		imageGrid[x][y] = imageObjects[Math.floor(Math.random() * imageObjects.length)];
 	    }
         }
@@ -56,6 +61,28 @@ function randomize_images(callback) {
 function resize_canvas() {
     canvas.width = canvas.parentNode.offsetWidth;
     canvas.height = canvas.parentNode.offsetHeight;
+
+    imagePadding = parseInt(document.getElementById('border').value);
+    console.log("border: " + imagePadding);
+
+    if (document.getElementById('maintain-aspect-ratio').checked) {
+	var imageAspectRatio = imageGrid[0][0].width / imageGrid[0][0].height;
+	var canvasAspectRatio = canvas.width / canvas.height;
+
+	imageWidth = (canvas.width / imagesHorizontal) - (imagePadding * imagesHorizontal);
+	imageHeight = imageWidth / imageAspectRatio;
+
+	var totalImagesHeight = imagesVertical * (imageHeight + imagePadding) + imagePadding;
+	var realToCanvasScale = totalImagesHeight / canvas.height;
+
+	if (realToCanvasScale > 1) {
+	    imageHeight = (canvas.height / imagesVertical) - (imagePadding * imagesVertical);
+	    imageWidth = imageWidth / realToCanvasScale;
+	}
+    } else {
+	imageWidth = (canvas.width / imagesHorizontal) - (imagePadding * imagesHorizontal);
+	imageHeight = (canvas.height / imagesVertical) - (imagePadding * imagesVertical);
+    }
 }
 
 function layout_images() {
@@ -67,14 +94,12 @@ function layout_images() {
     ctx.fillStyle = "rgb(255, 255, 255)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    var imagePadding = 4;
-    var imageWidth = (canvas.width / 3) - (imagePadding * 3);
-    var imageHeight = (canvas.height / 3) - (imagePadding * 3);
-
-    for (var x = 0; x < 3; x++) {
-	for (var y = 0; y < 3; y++ ) {
-	    var imageX = x * (imageWidth + imagePadding) + imagePadding;
-	    var imageY = y * (imageHeight + imagePadding) + imagePadding;
+    var offsetX = (canvas.width - (imagesHorizontal * (imageWidth + imagePadding) + imagePadding)) / 2;
+    var offsetY = (canvas.height - (imagesVertical * (imageHeight + imagePadding) + imagePadding)) / 2;
+    for (var x = 0; x < imagesHorizontal; x++) {
+	for (var y = 0; y < imagesVertical; y++ ) {
+	    var imageX = offsetX + (x * (imageWidth + imagePadding) + imagePadding);
+	    var imageY = offsetY + (y * (imageHeight + imagePadding) + imagePadding);
 	    ctx.drawImage(imageGrid[x][y], imageX, imageY, imageWidth, imageHeight);
 	}
     }
@@ -82,14 +107,13 @@ function layout_images() {
 
 function download_canvas(link) {
     link.href = document.getElementById('canvas').toDataURL();
-    link.download = 'images.png';
+    link.download = 'collage.png';
 }
 
 function init() {
     randomize_images(layout_images);
 
     window.onresize = function() {
-	resize_canvas();
 	layout_images();
     };
 
