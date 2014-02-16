@@ -47,11 +47,28 @@ function loadImages(callback) {
     }
 }
 
+function get_random(array) {
+    return array[Math.floor(Math.random() * array.length)];
+}
+
 function randomize_images(callback) {
+    var allowDuplicates = document.getElementById('allow-duplicates').checked;
+
     loadImages(function() {
+	//Clone the image objects array so we don't
+	//need to remove cached objects from the original
+	//if we don't want duplicates
+	var imagePool = imageObjects.splice(0);
+
 	for (var x = 0; x < imagesHorizontal; x++) {
 	    for (var y = 0; y < imagesVertical; y++ ) {
-		imageGrid[x][y] = imageObjects[Math.floor(Math.random() * imageObjects.length)];
+		var chosenImage = get_random(imagePool);
+
+		if (!allowDuplicates) {
+		    imagePool.splice(imagePool.indexOf(chosenImage), 1);
+		}
+
+		imageGrid[x][y] = chosenImage;
 	    }
         }
 	callback();
@@ -121,6 +138,10 @@ function init() {
     }, false);
 
     document.getElementById('reroll-button').addEventListener('click', function() {
+	randomize_images(layout_images);
+    }, false);
+
+    document.getElementById('allow-duplicates').addEventListener('click', function() {
 	randomize_images(layout_images);
     }, false);
 }

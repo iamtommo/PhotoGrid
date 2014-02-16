@@ -6,11 +6,12 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body onload="init()">
-  <div class="container">
+  <div id="container">
     <canvas id="canvas">Canvas not supported</canvas>
   </div>
-  <div align="center">
+  <div id="options" align="center">
     <input type="checkbox" id="maintain-aspect-ratio" onclick="layout_images()" checked>Maintain Aspect Ratio</input>
+    <input type="checkbox" id="allow-duplicates">Allow Duplicates</input>
     <input type="number" id="border" value="4" oninput="layout_images()">Border</input>
     <button type="button" id="reroll-button">Randomize</button>
     <a href="#" id="download-button">Download</button>
