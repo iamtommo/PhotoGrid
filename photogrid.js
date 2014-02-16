@@ -57,7 +57,8 @@ function randomize_images(callback) {
     loadImages(function() {
 	//Clone the image objects array so we don't
 	//need to remove cached objects from the original
-	//if we don't want duplicates
+	//if we don't want duplicates so we can re-layout the canvas
+	//without re-loading image objects
 	var imagePool = imageObjects.splice(0);
 
 	for (var x = 0; x < imagesHorizontal; x++) {
